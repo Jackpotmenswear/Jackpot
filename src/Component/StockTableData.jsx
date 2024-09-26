@@ -1,7 +1,6 @@
 const StockTableData = ({ stock, onEdit }) => {
     return (
         <tr>
-            {/* <td>{Item}</td> */}
             <td>{stock.Item}</td>
             <td>{stock.Qty}</td>
             <td>{stock.Dealer}</td>
@@ -9,8 +8,7 @@ const StockTableData = ({ stock, onEdit }) => {
             <td>{stock.Mrp}</td>
             <td>{stock.Sp}</td>
             <td>
-                {/* Call the onEdit function with the stock details */}
-                <button onClick={() => onEdit(stock)}>Details</button>
+                <button className='buttondet' onClick={() => onEdit(stock)}>Details</button>
             </td>
         </tr>
     );
