@@ -28,7 +28,7 @@ const AddData = ({ close, addInvoiceData, editData }) => {
     useEffect(() => {
         const fetchStockData = async () => {
             try {
-                const response = await Axios.get("https://jackpot-backend-r3dc.onrender.com/api/stocks"); 
+                const response = await Axios.get("http://localhos:5000/api/stocks"); 
                setStockData(response.data.map(stock=>stock.Item)); 
                
             } catch (error) {
@@ -133,7 +133,7 @@ const AddData = ({ close, addInvoiceData, editData }) => {
         item.map(async (it,index)=>{
             console.log(item[index]+"=>"+qty[index])
             try{
-                const response=await axios.post("https://jackpot-backend-r3dc.onrender.com/api/invoicestock",{
+                const response=await axios.post("http://localhost:5000/api/invoicestock",{
                     Item:item[index],Qty:qty[index]
                 })
                 console.log(response.data)
@@ -163,9 +163,9 @@ const AddData = ({ close, addInvoiceData, editData }) => {
                 TotalAmount
             };
             if (editData) {
-                await Axios.put(`https://jackpot-backend-r3dc.onrender.com/api/invoice/${editData._id}`, newInvoiceData);
+                await Axios.put(`http://localhost:5000/api/invoice/${editData._id}`, newInvoiceData);
             } else {
-                await Axios.post("https://jackpot-backend-r3dc.onrender.com/api/invoice", newInvoiceData);
+                await Axios.post("http://localhost:5000/api/invoice", newInvoiceData);
             }
             addInvoiceData();
             close();
@@ -173,7 +173,27 @@ const AddData = ({ close, addInvoiceData, editData }) => {
             console.error("Error:", error);
         }
     };
-
+    useEffect(() => {
+        // Step 1: Calculate the total amount for the items
+        const calculatedTotal = ListOfQty.reduce(
+            (total, qty, index) => total + (parseInt(qty, 10) * parseFloat(ListOfPrice[index] || 0)),
+            0
+        );
+        
+        // Step 2: Apply discount
+        const discountedTotal = calculatedTotal - (calculatedTotal * Discount / 100);
+        
+        // Update the state with calculated values
+        setTotalAmount(calculatedTotal);
+        setDiscountAmt(discountedTotal);
+        setTotalCount(calculatedTotal);
+    }, [ListOfQty, ListOfPrice, Discount]);
+    
+    // Balance calculation when payment method is cash
+    const calculateBalance = () => {
+        return AmountReceived - DiscountAmt > 0 ? AmountReceived - DiscountAmt : 0;
+    };
+    
     return (
         <div className="modal">
             <div className="form">
@@ -285,7 +305,7 @@ const AddData = ({ close, addInvoiceData, editData }) => {
                     <div>Total Amount: {TotalAmount}</div>
                     <div>Discounted Amount: {DiscountAmt}</div>
                     {(Paymentmeth==="cash")&&(
-                        <label>Balance to Return:{AmountReceived - DiscountAmt > 0 ? AmountReceived - DiscountAmt : 0}</label>
+                        <label>Balance to Return:{calculateBalance()}</label>
                     )}
                     <div className="footer">
                         <button type="submit">Submit</button>
