@@ -1,46 +1,48 @@
-import { RouterProvider, Outlet ,createBrowserRouter } from "react-router-dom";
-import Stock from './Component/Stock.jsx';
-import Invoice from './Component/Invoice.jsx';
-import Login from './Component/Login.jsx';
-import ChangePass from './Component/ChangePass.jsx';
+import { useState } from 'react'
+import reactLogo from './assets/react.svg'
+import viteLogo from '/vite.svg'
+import './App.css'
+import { Outlet, RouterProvider, createBrowserRouter } from "react-router-dom"
+import Invoice from './Component/Invoice'
+import { useNavigate } from 'react-router-dom';
+import Login from './Component/Login'
+import Stock from './Component/Stock'
+import ChangePass from './Component/ChangePass'
 
-const Layout = () => {
+const Log=()=>{
     return (
-      <>
-        <Outlet />
-      </>
-    );
-};
+        <>
+      <Outlet/>
+    </>
+  )
+}
 
-const router = createBrowserRouter([
-    {
-        path: "/",
-        element: <Layout />, // Main layout with Nav
-        children: [
-            {
-                path: "/",
-                element: <Login /> // Login as the default route
-            },
-            {
-                path: "/invoice",
-                element: <Invoice />
-            },
-            {
-                path: "/stock",
-                element: <Stock />
-            },
-            {
-                path: "/profile",
-                element: <ChangePass />
-            }
-        ]
-    }
+const router=createBrowserRouter([
+  {
+    path: "/",
+    // element:<Login/>,
+    children:[
+      {
+        path:"/",
+        element:<Login/>
+      },{
+        path:"/invoice",
+        element:<Invoice/>
+      },{
+        path:"/stock",
+        element:<Stock/>
+      },{
+        path:"/profile",
+        element:<ChangePass/>
+      }
+    ]
+  },
 ]);
 
-const App = () => {
-    return (
-        <RouterProvider router={router} />
-    );
-};
+const App=()=>{
+  return (
+    <RouterProvider router={router} />
+  )
+}
 
-export default App;
+export default App
